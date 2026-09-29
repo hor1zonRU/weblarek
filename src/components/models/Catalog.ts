@@ -24,5 +24,4 @@ export class Catalog {
   getSelectedProduct(): IProduct | null  {
     return this.selectedProduct;
   }
-
 }

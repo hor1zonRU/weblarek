@@ -15,7 +15,7 @@ export interface IProduct {
 }
 
 export interface IBuyer {
-  payment: TPayment | "";
+  payment: TPayment | null;
   email: string;
   phone: string;
   address: string;
@@ -35,7 +35,9 @@ export interface IOrder {
 
 export interface Order extends IBuyer {
   total: number;
-  products: string[];
+  items: string[];
 }
+
+export type Errors = Record<string, string>;
 
 

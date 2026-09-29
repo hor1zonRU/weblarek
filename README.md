@@ -121,7 +121,7 @@ interface IProduct {
 
 ``` typescript
 interface IBuyer {
-  payment: TPayment;
+  payment: TPayment | null;
   email: string;
   phone: string;
   address: string;
@@ -131,38 +131,170 @@ interface IBuyer {
 ###### Модели данных:
 Содержит в себе описание классов, в которых будет реализована работа с данными.
 
-Каталог товаров:
+Класс Catalog:
 
-хранит массив всех товаров;
-хранит товар, выбранный для подробного отображения;
+Хранит данные о массиве товаров и данные об отдельном товаре.
+Конструктор класса не принимает параметров.
+
+```typescript
+export class Catalog {
+
+  private products: IProduct[] = [];
+  private selectedProduct: IProduct | null = null;
+
+  setProducts(products: IProduct[]): void {
+    this.products = products
+  }
+
+  getProducts(): IProduct[] {
+    return this.products;
+  }
+
+  getProductById(productId: string): IProduct | undefined {
+    return this.products.find((product: IProduct): boolean => product.id === productId)
+  }
+
+  setSelectedProduct(product: IProduct): void {
+    this.selectedProduct = product;
+  }
+
+  getSelectedProduct(): IProduct | null  {
+    return this.selectedProduct;
+  }
+}
+```
+
 Методы:
-  сохранение массива товаров полученного в параметрах метода;
-  получение массива товаров из модели;
-  получение одного товара по его id;
-  сохранение товара для подробного отображения;
-  получение товара для подробного отображения.
+  setProducts(products: IProduct[]): void - сохранение массива товаров полученного в параметрах метода.
+  getProducts(): IProduct[] - получение массива товаров из модели.
+  getProductById(productId: string): IProduct | undefined - получение одного товара по его id.
+  setSelectedProduct(product: IProduct): void - сохранение товара для подробного отображения.
+  getSelectedProduct(): IProduct | null - получение товара для подробного отображения.
 
-Класс корзины:
+Класс Cart (Корзина):
 
 Хранит массив товаров, выбранных покупателем для покупки.
-Методы:
-  получение массива товаров, которые находятся в корзине;
-  добавление товара, который был получен в параметре, в массив корзины;
-  удаление товара, полученного в параметре из массива корзины;
-  очистка корзины;
-  получение стоимости всех товаров в корзине;
-  получение количества товаров в корзине;
-  проверка наличия товара в корзине по его id, полученного в параметр метода.
+Конструктор класса не принимает параметров.
 
-Класс Покупателя:
+```typescript
+export class Cart {
 
-Хранит следующие данные:
-  вид оплаты;
-  адреc;
-  телефон;
-  email.
+  private products: IProduct[] = [];
+
+  getProductsInCart(): IProduct[] {
+    return this.products;
+  }
+
+  setProductToCart(product: IProduct): void {
+    this.products.push(product);
+  }
+
+  deleteProductFromCart(productId: string): void {
+    this.products = this.products.filter((product: IProduct):boolean => product.id !== productId);
+  }
+
+  clearCart(): void {
+    this.products.length = 0;
+  }
+
+  getSumOfProductsInCart(): number {
+    return this.products.reduce((sum: number, product: IProduct): number => {
+      return product.price === null ? sum : sum + product.price
+    }, 0)
+  }
+
+  getQuantityOfProductsInCart(): number {
+    return this.products.length;
+  }
+  
+  hasProductInCart(productId: string): boolean {
+    return this.products.some((product: IProduct): boolean => product.id === productId)
+  }
+}
+```
+
 Методы:
-  сохранение данных в модели. Один общий метод или отдельные методы для каждого поля. Важно учесть, что должна быть реализована возможность сохранить только одно значение, например, только адрес или только телефон, не удалив при этом значения других полей, которые уже могут храниться в классе;
-  получение всех данных покупателя;
-  очистка данных покупателя;
-  валидация данных. Обратите внимание, что правила валидации описаны в функциональных требованиях. Поле является валидным, если оно не пустое. Метод валидации должен давать возможность определить не только валидность каждого отдельного поля, но и предоставлять информацию об ошибке, связанной с проверкой конкретного значения.
+  getProductsInCart(): IProduct[] - получение массива товаров, которые находятся в корзине.
+  setProductToCart(product: IProduct): void  - добавление товара, который был получен в параметре, в массив корзины.
+  deleteProductFromCart(productId: string): void - удаление товара, полученного в параметре из массива корзины.
+  clearCart(): void - очистка корзины.
+  getSumOfProductsInCart(): number - получение стоимости всех товаров в корзине.
+  getQuantityOfProductsInCart(): number - получение количества товаров в корзине.
+  hasProductInCart(productId: string): boolean - проверка наличия товара в корзине по его id, полученного в параметр метода.
+
+Класс Buyer:
+Хранит данные о покупателе.
+Конструктор класса не принимает параметров.
+
+```typescript
+export class Buyer {
+  private payment: TPayment | null = null;
+  private email: string = "";
+  private phone: string = "";
+  private address: string = "";
+
+
+  setBuyerData(data: Partial<IBuyer>): void {
+    Object.assign(this, data)
+  }
+
+  getBuyerData(): IBuyer {
+    return {
+      payment: this.payment,
+      email: this.email,
+      phone: this.phone,
+      address: this.address
+    }
+  }
+
+  clearBuyerData(): void {
+    this.payment = null;
+    this.email = '';
+    this.phone = '';
+    this.address = '';
+  }
+
+  validateBuyerData(): Record<string, string> {
+    const errors: Errors = {};
+    
+    if (this.payment === null) {errors.payment = "Не выбран вид оплаты"};
+    if (this.email === "") {errors.email = "Укажите емэйл"};
+    if (this.phone === "") {errors.phone = "укажите телефон"};
+    if (this.address === "") {errors.address = "Не указан адрес"};
+
+    return errors;
+  }
+}
+```
+
+Методы:
+  setBuyerData(data: Partial<IBuyer>): void - сохранение данных о покупателе. 
+  getBuyerData(): IBuyer - получение всех данных покупателя.
+  clearBuyerData(): void - очистка данных покупателя.
+  validateBuyerData(): Record<string, string> - валидация данных. 
+
+###### Слой коммуникации
+
+Для взаимодействия с сервером есть класс ShopApi.
+Этот класс будет использовать композицию, чтобы выполнить запрос на сервер с помощью метода get класса Api и будет получать с сервера объект с массивом товаров.
+
+```typescript
+export class ShopApi {
+  private api: IApi;
+  constructor (api: IApi) {
+    this.api = api;
+  }
+
+  getProductList(): Promise<IProductList> {
+    return this.api.get<IProductList>('/product');
+  }
+
+  postOrderList(order: Order): Promise<IOrder> {
+    return this.api.post<IOrder>('/order', order)
+  }
+}
+```
+Конструктор: constructor(api: IApi) - в конструктор передаётся класс с методами get и post для принятия и отправки данных с сервера.
+Методы класса: 
+getProductList(): Promise<IProductList> - получение с сервера объекта с товарами. 
+postOrderList(order: Order): Promise<IOrder> - отправка на сервер данных о купленных товарах и покупателе.

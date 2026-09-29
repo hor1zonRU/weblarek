@@ -1,7 +1,7 @@
-import { IBuyer, TPayment} from "../../types/index";
+import { IBuyer, TPayment, Errors} from "../../types/index";
 
 export class Buyer {
-  private payment: TPayment | "" = "";
+  private payment: TPayment | null = null;
   private email: string = "";
   private phone: string = "";
   private address: string = "";
@@ -21,16 +21,16 @@ export class Buyer {
   }
 
   clearBuyerData(): void {
-    this.payment = "";
+    this.payment = null;
     this.email = '';
     this.phone = '';
     this.address = '';
   }
 
   validateBuyerData(): Record<string, string> {
-    const errors: Record<string, string> = {};
-
-    if (this.payment === "") {errors.payment = "Не выбран вид оплаты"};
+    const errors: Errors = {};
+    
+    if (this.payment === null) {errors.payment = "Не выбран вид оплаты"};
     if (this.email === "") {errors.email = "Укажите емэйл"};
     if (this.phone === "") {errors.phone = "укажите телефон"};
     if (this.address === "") {errors.address = "Не указан адрес"};

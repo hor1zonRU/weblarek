@@ -1,16 +1,16 @@
-import { IProductList, IOrder, Order} from "../../types/index";
-import { Api } from "../base/Api";
+import { IApi, IProductList, IOrder, Order} from "../../types/index";
 
-export class ShopApi extends Api {
-  constructor (baseUrl: string, options?: RequestInit) {
-    super(baseUrl, options);
+export class ShopApi {
+  private api: IApi;
+  constructor (api: IApi) {
+    this.api = api;
   }
 
   getProductList(): Promise<IProductList> {
-    return this.get<IProductList>('/product');
+    return this.api.get<IProductList>('/product');
   }
 
   postOrderList(order: Order): Promise<IOrder> {
-    return this.post<IOrder>('/order', order)
+    return this.api.post<IOrder>('/order', order)
   }
 }
