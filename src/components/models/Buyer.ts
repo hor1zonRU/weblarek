@@ -27,7 +27,7 @@ export class Buyer {
     this.address = '';
   }
 
-  validateBuyerData(): Record<string, string> {
+  validateBuyerData(): Errors {
     const errors: Errors = {};
     
     if (this.payment === null) {errors.payment = "Не выбран вид оплаты"};
