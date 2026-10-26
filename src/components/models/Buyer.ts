@@ -1,4 +1,5 @@
 import { IBuyer, TPayment, Errors} from "../../types/index";
+import { IEvents } from "../base/Events";
 
 export class Buyer {
   private payment: TPayment | null = null;
@@ -6,9 +7,11 @@ export class Buyer {
   private phone: string = "";
   private address: string = "";
 
+  constructor(protected events: IEvents) {}
 
   setBuyerData(data: Partial<IBuyer>): void {
-    Object.assign(this, data)
+    Object.assign(this, data);
+    this.events.emit(`user:change`);
   }
 
   getBuyerData(): IBuyer {
@@ -25,6 +28,7 @@ export class Buyer {
     this.email = '';
     this.phone = '';
     this.address = '';
+    this.events.emit(`user:change`);
   }
 
   validateBuyerData(): Errors {

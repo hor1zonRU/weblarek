@@ -40,4 +40,6 @@ export interface Order extends IBuyer {
 
 export type Errors = Record<string, string>;
 
-
+export interface ICardActions {
+  onClick: (event: MouseEvent) => void;
+}
