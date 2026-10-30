@@ -1,9 +1,11 @@
 import { Card } from "./Card";
 import { ensureElement } from "../../utils/utils";
-import { IProduct, ICardActions } from "../../types/index";
+import {IProduct, ICardActions } from "../../types/index";
 
-interface ICardInCart extends IProduct{
+interface ICardInCart {
   index: number;
+  title: IProduct['title'];
+  price: IProduct['price'];
 }
 
 export class CardInCart extends Card<ICardInCart> {
@@ -17,7 +19,6 @@ export class CardInCart extends Card<ICardInCart> {
     this.deleteButton = ensureElement<HTMLButtonElement>('.basket__item-delete', this.container);
 
     if (actions?.onClick) {
-      // ИСПРАВЛЕНИЕ: Оборачиваем вызов, отменяя стандартное поведение
       this.deleteButton.addEventListener('click', (e) => {
         e.preventDefault();
         actions.onClick(e); 

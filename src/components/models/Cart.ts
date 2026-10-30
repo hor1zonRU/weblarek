@@ -13,19 +13,16 @@ export class Cart {
 
   setProductToCart(product: IProduct): void {
     this.products.push(product);
-    this.events.emit(`cart:add`);
     this.events.emit('cart:change');
   }
 
   deleteProductFromCart(productId: string): void {
     this.products = this.products.filter((product: IProduct):boolean => product.id !== productId);
-    this.events.emit(`cart:remove`);
     this.events.emit('cart:change');
   }
 
   clearCart(): void {
     this.products.length = 0;
-    this.events.emit(`cart:clear`);
     this.events.emit('cart:change');
   }
 

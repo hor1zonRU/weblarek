@@ -1,12 +1,15 @@
-import { Form } from "./Form";
+import { Form, IForm } from "./Form";
 import { ensureElement } from "../../utils/utils";
 import { IEvents } from "../base/Events";
+import { IBuyer } from "../../types/index"
 
-export class FormContacts extends Form {
+type TFormContacts = Pick<IBuyer, 'email' | 'phone'> & IForm
+
+export class FormContacts extends Form<TFormContacts> {
   protected emailInput: HTMLInputElement;
   protected phoneInput: HTMLInputElement;
 
-  constructor(protected events: IEvents, container: HTMLFormElement) {
+  constructor(events: IEvents, container: HTMLFormElement) {
     super(events, container);
 
     this.emailInput = ensureElement<HTMLInputElement>('input[name="email"]', this.container);

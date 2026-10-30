@@ -1,14 +1,15 @@
-import { Form} from "./Form";
+import { Form, IForm} from "./Form";
 import { ensureAllElements, ensureElement } from "../../utils/utils";
-import { TPayment } from "../../types/index";
+import { TPayment, IBuyer} from "../../types/index";
 import { IEvents } from "../base/Events";
 
+type TFormOrder = Pick<IBuyer, 'payment' | 'address'> & IForm 
 
-export class FormOrder extends Form {
+export class FormOrder extends Form<TFormOrder> {
   protected buttonPayment: HTMLButtonElement[];
   protected addressInput: HTMLInputElement;
 
-  constructor(protected events: IEvents, container: HTMLFormElement) {
+  constructor(events: IEvents, container: HTMLFormElement) {
     super(events, container);
 
     this.buttonPayment = ensureAllElements<HTMLButtonElement>('.button_alt', this.container);
@@ -17,7 +18,6 @@ export class FormOrder extends Form {
     this.buttonPayment.forEach( button => {
       button.addEventListener('click', (e) => {
         e.preventDefault();
-        this.payment = button.name as TPayment;
         this.events.emit('formOrder:change', {field: 'payment', value: button.name});
       })
     })
@@ -27,9 +27,9 @@ export class FormOrder extends Form {
     })
   }
 
-  protected set payment(value: TPayment) {
+  protected set payment(value: TPayment | null) {
     this.buttonPayment.forEach(button => {
-      button.classList.toggle('button_alt-active', button.name === value);
+      button.classList.toggle('button_alt-active', value !== null && button.name === value);
     })
   }
 
