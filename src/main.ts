@@ -235,8 +235,6 @@ events.on('contacts:submit', () => {
       cart.clearCart();        
       buyer.clearBuyerData();  
 
-      events.emit('cart:change');
-
       modal.render({
         content: success.render({
           total: result.total

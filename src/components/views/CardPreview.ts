@@ -35,7 +35,7 @@ export class CardPreview extends Card<ICardPreview>{
   protected set description(value: string) {
     this.cardDescription.textContent = value;
   }
-  protected set button(value: string) {
+  protected set buttonText(value: string) {
     this.cardAddButton.textContent = value;
   }
   protected set valid(value: boolean) {
